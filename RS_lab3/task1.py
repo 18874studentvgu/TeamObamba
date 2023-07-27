@@ -2,7 +2,7 @@ from keras.models import load_model  # TensorFlow is required for Keras to work
 import cv2  # Install opencv-python
 import numpy as np
 class Task1:
-    def __init__(self):
+    def __init__(self,camNumber):
         print("Initi task1")
 
 
@@ -16,12 +16,14 @@ class Task1:
         self.class_names = open("labels.txt", "r").readlines()
 
         # CAMERA can be 0 or 1 based on default camera of your computer
-        self.camera = cv2.VideoCapture(0)
+        print(camNumber)
+        self.cameraNumber = camNumber
+        self.camera = cv2.VideoCapture(self.cameraNumber)
         print(self.camera)
         return
 
     def Task1Run(self):
-        print("Task1 is activated")
+        print("Task1 is activated for camera %d" % self.cameraNumber)
         # while True:
         # Grab the webcamera's image.
         ret, image = self.camera.read()
@@ -30,7 +32,7 @@ class Task1:
         image = cv2.resize(image, (224, 224), interpolation=cv2.INTER_AREA)
 
         # Show the image in a window
-        cv2.imshow("Webcam Image", image)
+        # cv2.imshow("Webcam Image %d" % self.cameraNumber, image)
 
         # Make the image a numpy array and reshape it to the models input shape.
         image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
@@ -49,11 +51,11 @@ class Task1:
         print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
 
         # Listen to the keyboard for presses.
-        keyboard_input = cv2.waitKey(1)
+        # keyboard_input = cv2.waitKey(1)
 
         # 27 is the ASCII for the esc key on your keyboard.
         # if keyboard_input == 27:
         #     break
-
-        # camera.release()
-        # cv2.destroyAllWindows()
+    def __exit__(self, exc_type, exc_value, traceback):
+        camera.release()
+        cv2.destroyAllWindows()
